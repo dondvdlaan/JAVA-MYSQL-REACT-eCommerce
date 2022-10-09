@@ -1,0 +1,18 @@
+.root {
+  max-width: '100%';
+  }
+
+.cardContent {
+    display: 'flex';
+    justify-content: 'space-between';
+}
+
+.cardActions {
+  display: 'flex';
+  justify-content: 'flex-end';
+}
+
+.media {
+  height: 150;
+  padding-top: '5.25%';
+}

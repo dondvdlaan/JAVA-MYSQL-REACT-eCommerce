@@ -1,0 +1,27 @@
+.link{
+    text-decoration: 'none';
+  }
+
+.cardDetails {
+    display: 'flex';
+    margin-top: '10%';
+    width: '100%';
+    justify-content: 'space-between';
+  }
+
+.emptyButton {
+    min-width: '150px';
+    margin-bottom: '5px';
+    margin-right: '20px';
+  }
+.checkoutButton {
+    min-width: '150px';
+  }
+
+  .title {
+    margin-top: '5%';
+  }
+  
+  .toolbar {
+    min-height: 64px;
+  }

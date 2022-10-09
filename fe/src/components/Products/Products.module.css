@@ -1,0 +1,9 @@
+.content {
+  flex-grow: 1;
+  background-color: gray;
+  padding: 3%;
+}
+
+.toolbar {
+  min-height: 40px;
+}

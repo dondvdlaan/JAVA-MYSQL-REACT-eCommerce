@@ -1,0 +1,16 @@
+.cardContent {
+    display: 'flex';
+    justify-content: 'space-between';
+  }
+.cartActions {
+    justify-content: 'space-between';
+  }
+  
+.buttons {
+    display: 'flex';
+    align-items: 'center';
+  }
+
+.media {
+    height: '260';
+  }
