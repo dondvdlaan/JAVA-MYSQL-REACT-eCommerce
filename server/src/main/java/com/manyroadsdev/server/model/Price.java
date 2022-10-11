@@ -4,7 +4,12 @@ import javax.persistence.*;
 
 @Entity
 public class Price {
-    // Auto increment id
+
+    // *** Constants ***
+    private static final int DEF_VALUE_INT = -1;
+    private static final String DEF_VALUE_STR = ">nothingToSeeHere<";
+
+    // *** Declaration and initialisation attributes ***
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int priceID;
@@ -13,6 +18,7 @@ public class Price {
     private String formattedWithSymbol;
     private double raw;
 
+    // *** Constructors ***
     public Price() {
     }
 
@@ -35,7 +41,7 @@ public class Price {
         this.formattedWithSymbol = symbol + Double.toString(price);
         this.raw = price;
     }
-
+    // *** Getter und Setter ***
     public Integer getPriceID() {
         return priceID;
     }

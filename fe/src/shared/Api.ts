@@ -1,14 +1,12 @@
 import axios, { AxiosPromise, AxiosResponse, Method } from "axios";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-
-// config
+// *** Constants and variables ***
 const baseUrl = "http://localhost:8080";
-
-
 // local utility type
 type SetState<T> = Dispatch<SetStateAction<T>>;
 
+// *** Functions ***
 /*
  * Abstracts away both needs for api calls,
  * on rendering and on events / conditions
@@ -37,6 +35,30 @@ export function useApi<T>(
   return [data, setData];
 }
 
+/*
+ * This Api2 function was copied from Api above and changed as follows:
+ * - default state is an empty array[], so the map function in jsx is not stuck
+ * - an if condition within the useEffect was added, which causes the Api2 to 
+ * wait till the condition arrives
+ *
+ * @param path      [string]  : relative path to baseUrl
+ * @param condition [string]  : Api2 will wait till condition is fulfilled
+ * @return, Response Data
+ */
+export function useApi2<T>(
+  path: string, condition: string
+): [T[] , SetState<T[] >] {
+  const [data, setData] = useState<T[]>([]);
+
+  useEffect(() => {
+
+    console.log("condition: ",condition);
+    
+    if(condition) api("GET", path, setData);
+  }, [condition]);
+
+  return [data, setData];
+}
 /*
  * Useful for calls on events or in conditions
  *

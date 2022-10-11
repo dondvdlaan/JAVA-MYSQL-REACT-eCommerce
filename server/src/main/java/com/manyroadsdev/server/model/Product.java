@@ -12,7 +12,6 @@ public class Product {
     private static final String DEF_VALUE_STR = ">nothingToSeeHere<";
 
     // *** Declaration and initialisation attributes ***
-    // Auto increment id
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int prodID;
@@ -20,7 +19,7 @@ public class Product {
     private String prodDescription;
     // Product is parent in relationship, 1-to-1 unidirectional
     @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "price_id")
+    @JoinColumn(name = "priceID")
     private Price price;
     @Column(length = 3000)
     private String prodImage;

@@ -10,8 +10,8 @@ import {
 import { useForm, FormProvider } from "react-hook-form";
 
 import { Link } from "react-router-dom";
-import { commerce } from "../../lib/commerce";
 import FormInput from "./CustomTextField";
+import { useApi, useApi2} from '../../shared/Api';
 
 /**
  * This Component requires from user to input Shipping Address
@@ -19,83 +19,28 @@ import FormInput from "./CustomTextField";
 const AddressForm = ({ checkoutToken, next }) => {
 
 // *** Constants and variables ***
-  const [shippingCountries, setShippingCountries]       = useState([]);
+// Retrieving shipping countries from DB
+  const [countries, setCountries]                       = useApi(`countries`);
   const [shippingCountry, setShippingCountry]           = useState("");
-  const [shippingSubdivisions, setShippingSubdivisions] = useState([]);
+
+// Retrieving provinces/states in chosen country from DB
+  const [subdivisions, setSubdivisions] = 
+  useApi2(`provinces/${shippingCountry}`,shippingCountry);
+  
   const [shippingSubdivision, setShippingSubdivision]   = useState("");
-  const [shippingOptions, setShippingOptions]           = useState([]);
+
+// Retrieving options per provinces/states from DB
+  const [options, setOptions] = 
+  useApi2(`options/${shippingSubdivision}`,shippingSubdivision);
+
   const [shippingOption, setShippingOption]             = useState("");
 
   const methods = useForm();
 
-  const countries = Object.entries(shippingCountries).map(([code, name]) => ({
-    id: code,
-    label: name
-  }));
+  if(!countries) return <p>Loading countries...</p>
 
-  const subdivisions = Object.entries(shippingSubdivisions).map(
-    ([code, name]) => ({
-      id: code,
-      label: name
-    })
-  );
-
-  const options = shippingOptions.map((sO) => ({
-    id: sO.id,
-    label: `${sO.description} - (${sO.price.formatted_with_symbol})`
-  }));
-
-  const fetchShippingCountries = async (checkoutTokenId) => {
-    const { countries } = await commerce.services.localeListShippingCountries(
-      checkoutTokenId
-    );
-
-    // [AL, BT, GB]
-    setShippingCountries(countries);
-    setShippingCountry(Object.keys(countries)[0]);
-  };
-
-// *** Functions ***
-  const fetchSubdivisions = async (countryCode) => {
-    const { subdivisions } = await commerce.services.localeListSubdivisions(
-      countryCode
-    );
-
-    setShippingSubdivisions(subdivisions);
-    setShippingSubdivision(Object.keys(subdivisions)[0]);
-  };
-
-  const fetchShippingOptions = async (
-    checkoutTokenId,
-    country,
-    region = null
-  ) => {
-    const options = await commerce.checkout.getShippingOptions(
-      checkoutTokenId,
-      { country, region }
-    );
-
-    setShippingOptions(options);
-    setShippingOption(options[0].id);
-  };
-
-  useEffect(() => {
-    fetchShippingCountries(checkoutToken.tokenID);
-  }, []);
-
-  useEffect(() => {
-    if (shippingCountry) fetchSubdivisions(shippingCountry);
-  }, [shippingCountry]);
-
-  useEffect(() => {
-    if (shippingSubdivision)
-      fetchShippingOptions(
-        checkoutToken.tokenID,
-        shippingCountry,
-        shippingSubdivision
-      );
-  }, [shippingSubdivision]);
-
+  console.log("Countries: ", countries);
+  console.log("subdivisions: ", subdivisions);
 
   return (
     <>
@@ -129,8 +74,8 @@ const AddressForm = ({ checkoutToken, next }) => {
                 onChange={(e) => setShippingCountry(e.target.value)}
               >
                 {countries.map((country) => (
-                  <MenuItem key={country.id} value={country.id}>
-                    {country.label}
+                  <MenuItem key={country.countryID} value={country.countryID}>
+                    {country.countryName}
                   </MenuItem>
                 ))}
               </Select>
@@ -144,8 +89,8 @@ const AddressForm = ({ checkoutToken, next }) => {
                 onChange={(e) => setShippingSubdivision(e.target.value)}
               >
                 {subdivisions.map((subdivision) => (
-                  <MenuItem key={subdivision.id} value={subdivision.id}>
-                    {subdivision.label}
+                  <MenuItem key={subdivision.provID} value={subdivision.provID}>
+                    {subdivision.provName}
                   </MenuItem>
                 ))}
               </Select>
@@ -159,8 +104,8 @@ const AddressForm = ({ checkoutToken, next }) => {
                 onChange={(e) => setShippingOption(e.target.value)}
               >
                 {options.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.label}
+                  <MenuItem key={option.optionID} value={option.optionID}>
+                    {option.optionDescription} - {option.price.formattedWithSymbol}
                   </MenuItem>
                 ))}
               </Select>
