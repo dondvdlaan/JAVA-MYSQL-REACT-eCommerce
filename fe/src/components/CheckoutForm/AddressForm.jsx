@@ -114,7 +114,7 @@ const AddressForm = ({ checkoutToken, next }) => {
           <br />
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Button component={Link} to="/cart" variant="outlined">
+            <Button component={Link} to={`/cart/${checkoutToken.cartID}`} variant="outlined">
               Back to cart
             </Button>
             <Button type="submit" variant="contained" color="primary">

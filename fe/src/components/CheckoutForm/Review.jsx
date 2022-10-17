@@ -3,11 +3,13 @@ import React from "react";
 import { Typography, List, ListItem, ListItemText } from "@mui/material";
 
 /**
- * Main Component
+ * Component that displays the items about to be ordered with quantity and 
+ * total price
  */
 const Review = ({ checkoutToken }) => {
 
-  console.log("checkoutToken: ", checkoutToken)
+  console.log("Review checkoutToken: ", checkoutToken)
+
   return (
     <>
       <Typography variant="h6" gutterBottom>
@@ -15,21 +17,21 @@ const Review = ({ checkoutToken }) => {
       </Typography>
 
       <List disablePadding>
-        {checkoutToken.live.line_items.map((product) => (
-          <ListItem style={{ padding: "10px 0" }} key={product.name}>
+        {checkoutToken.live.lineItems.map((product) => (
+          <ListItem style={{ padding: "10px 0" }} key={product.productName}>
             <ListItemText
-              primary={product.name}
-              secondary={`Quantity: ${product.quantity}`}
+              primary={product.productName}
+              secondary={`Quantity: ${product.itemQuantity}`}
             />
             <Typography variant="body2">
-              {product.line_total.formatted_with_symbol}
+              {product.lineTotal.formattedWithSymbol}
             </Typography>
           </ListItem>
         ))}
         <ListItem style={{ padding: "10px 0" }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" style={{ fontWeight: 700 }}>
-            {checkoutToken.live.subtotal.formatted_with_symbol}
+            {checkoutToken.live.subTotal.formattedWithSymbol}
           </Typography>
         </ListItem>
       </List>

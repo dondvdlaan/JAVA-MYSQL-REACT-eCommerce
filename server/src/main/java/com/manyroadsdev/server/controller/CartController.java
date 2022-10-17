@@ -7,14 +7,14 @@ import com.manyroadsdev.server.repository.ItemRepository;
 import com.manyroadsdev.server.repository.ProductRepository;
 import com.manyroadsdev.server.services.CartServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import java.io.*;
 
 @CrossOrigin
 @RestController
@@ -66,19 +66,22 @@ public class CartController {
     }
 
     /**
-     * Add new Item to the cart
+     * Add (new) Item to the cart
      *
      * @param cartID   int      : ID of current cart
      * @param prodID   int      : ID of Product to be added
-     * @param quantity String   : Product quantity
+     * @param prodQuantity int   : Product quantity
      */
-    @PostMapping("/addToCart/{cartID}/{prodID}")
-    public Cart addToCart(@PathVariable int cartID, @PathVariable int prodID, @RequestBody String quantity) {
+    @GetMapping("/addToCart/{cartID}/{prodID}/{prodQuantity}")
+    public
+    Cart addToCart(@PathVariable int cartID, @PathVariable int prodID, @PathVariable int prodQuantity) {
 
         System.out.println("Route addToCart");
 
         // *** Declaration and initialisation attributes ***
-        int itemQuantity = helper.objectToInteger(quantity);
+        //int prodQuantity = helper.objectToInteger(quantity);
+        Currency euro = new Currency("Euro","€");
+        Cart returnCart = new Cart();
         boolean itemExists = false;
         double currentLineTotalRaw = 0D;
         double increaseLineTotalRaw = 0D;
@@ -91,68 +94,71 @@ public class CartController {
         for (Item item : currentCart.getCartLineItems()) {
             if (item.getProdID() == (prodID)) {
 
-                // Set flag for new item creation
+                // Set flag to inhibit new item creation
                 itemExists = true;
 
                 // increase item quantity
                 int tempQuantity = item.getItemQuantity();
-                item.setItemQuantity(tempQuantity += itemQuantity);
+                tempQuantity += prodQuantity;
+                item.setItemQuantity(tempQuantity);
 
                 // adjust lineTotal
                 currentLineTotalRaw= item.getLineTotal().getRaw();
-                increaseLineTotalRaw = (item.getPrice().getRaw() * itemQuantity);
-                item.setLineTotal(new Total("€",currentLineTotalRaw + increaseLineTotalRaw,"Euro"));
+                increaseLineTotalRaw = (item.getPrice().getRaw() * prodQuantity);
+                item.setLineTotal(new Total(euro.getSymbol(),currentLineTotalRaw + increaseLineTotalRaw,euro.getCode()));
             }
         }
-        // if new Product to add, create new lineItem
+        // if new Product, start adding
         if (!itemExists) {
 
-            // Find Product to be added
-            Optional<Product> product = productRepository.findById(prodID);
+            // Find new Product to be added
+            Product productToBeAdded = productRepository.findById(prodID).get();
 
             // Create new Item
-            if (product.isPresent()) {
-                Item newItem = new Item();
-                Product productToBeAdded = product.get();
+            Item newItem = new Item();
 
-                newItem.setItemImage(productToBeAdded.getProdImage());
-                newItem.setProductName(productToBeAdded.getProdName());
-                newItem.setItemQuantity(itemQuantity);
-                newItem.setPrice(productToBeAdded.getPrice());
-                newItem.setProdID(prodID);
+            newItem.setItemImage(productToBeAdded.getProdImage());
+            newItem.setProductName(productToBeAdded.getProdName());
+            newItem.setItemQuantity(prodQuantity);
+            newItem.setPrice(productToBeAdded.getPrice());
+            newItem.setProdID(prodID);
 
-                // Set Linetotal
-                increaseLineTotalRaw = productToBeAdded.getPrice().getRaw() * itemQuantity;
-                newItem.setLineTotal(new Total("€", increaseLineTotalRaw, "Euro"));
+            // Set Linetotal
+            increaseLineTotalRaw = productToBeAdded.getPrice().getRaw() * prodQuantity;
+            newItem.setLineTotal(new Total("€", increaseLineTotalRaw, "Euro"));
 
-                // Add new Item to cart
-                currentCart.getCartLineItems().add(newItem);
-            }
+            // Add new Item to cart
+            currentCart.getCartLineItems().add(newItem);
         }
         // Adjust cartSubTotal
         cartSubTotalRaw = currentCart.getCartSubTotal().getRaw();
         cartSubTotalRaw += increaseLineTotalRaw;
-        currentCart.setCartSubTotal(new Total("€",cartSubTotalRaw,"Euro"));
+        currentCart.setCartSubTotal(new Total(euro.getSymbol(),cartSubTotalRaw,euro.getCode()));
 
         // Adjust cartTotalItems
-        currentCart.setTotalItems(currentCart.getTotalItems() + itemQuantity);
+        int temp = currentCart.getTotalItems();
+        temp += prodQuantity;
+        currentCart.setTotalItems(temp);
 
         // Unique items is same as length of cartLine Items array
         currentCart.setTotalUniqueItems(currentCart.getCartLineItems().size());
 
     // Save cart and return
-    return cartRepository.save(currentCart);
+       returnCart = cartRepository.save(currentCart);
+
+    return returnCart;
     }
 
     /**
      * This route handles changes of the quantities of the items in the cart
+     *
      * @param   cartID      int     : ID of current cart
      * @param   itemID      int     : ID of item to change
      * @param   quantity    String  : new quantity of item
      * @return  cart        Cart    : updated cart
      */
     @PutMapping("/cartQuantities/{cartID}/{itemID}")
-    public Cart changeQuantitiesCart(@PathVariable int cartID, @PathVariable int itemID, @RequestBody String quantity){
+    public ResponseEntity<Cart> changeQuantitiesCart(@PathVariable int cartID, @PathVariable int itemID, @RequestBody String quantity){
 
         System.out.println("Route cartQuantities");
 
@@ -160,6 +166,7 @@ public class CartController {
         int itemQuantity = helper.objectToInteger(quantity);
         int currentQuantity = 0;
         double changeValue = 0D;
+        Item currentItem = new Item();
 
         // Find current Cart
         Cart currentCart = cartServices.getCartByID(cartID);
@@ -168,14 +175,20 @@ public class CartController {
         for (Item item : currentCart.getCartLineItems()) {
             if(item.getItemID() == itemID){
 
+                // Store current item
+                currentItem = item;
+
                 // Store current quantity and determine change in value
                 currentQuantity = item.getItemQuantity();
-                changeValue =( itemQuantity - item.getItemQuantity()) * item.getPrice().getRaw();
                 item.setItemQuantity(itemQuantity);
+
+                changeValue =(itemQuantity - currentQuantity) * item.getPrice().getRaw();
+
 
                 // Adjust lineTotal
                 double currentLineTotalRaw= item.getLineTotal().getRaw();
                 item.setLineTotal(new Total("€",currentLineTotalRaw + changeValue,"Euro"));
+
             }
         }
         // Adjust cartSubTotal
@@ -189,7 +202,10 @@ public class CartController {
         // Unique items is same as length of cartLine Items array
         currentCart.setTotalUniqueItems(currentCart.getCartLineItems().size());
 
-    return cartRepository.save(currentCart);
+        // If quantity is 0, remove item from cart
+        if (itemQuantity == 0) currentCart.getCartLineItems().remove(currentItem);
+
+    return ResponseEntity.ok(cartRepository.save(currentCart));
     }
     /**
      * This route handels removal of an item from the cart
@@ -241,6 +257,7 @@ public class CartController {
     }
     /**
      * Route to empty the cart at once.
+     *
      * @param   cartID      int     : Cart ID
      * @return  currentCart Cart    : return currentCart
      */
@@ -260,5 +277,4 @@ public class CartController {
 
     return cartRepository.save(currentCart);
     }
-
 }

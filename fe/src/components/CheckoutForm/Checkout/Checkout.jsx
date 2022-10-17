@@ -28,11 +28,9 @@ const Checkout = () => {
 // *** Constants and variables ***
 const {cartID}                          = useParams();
 const [cart, setCart]                   = useApi(`cart/${cartID}`);
-// const [cart, setCart]                   = useApi('cart');
 const [order, setOrder]                 = useState({});
 const [errorMessage, setErrorMessage]   = useState("");
 const [checkoutToken, setCheckoutToken] = useApi(`generateToken/${cartID}`);
-// const [checkoutToken, setCheckoutToken] = useState(null);
 const [activeStep, setActiveStep]       = useState(0);
 const [shippingData, setShippingData]   = useState({});
 
@@ -40,23 +38,9 @@ if(!cart) return <p>Loading cart...</p>
 if(!checkoutToken) return <p>Loading checkoutToken...</p>
 
 console.log("checkoutToken: ", checkoutToken)
+console.log("shippingData: ", shippingData)
 
 // *** Functions ***
-// useEffect(() => {
-//   if (cart == null) return;
-  
-//     const generateToken = async () => {
-//       try {
-//         const token = await commerce.checkout.generateToken(cart.id, {
-//           type: "cart"
-//         });
-
-//         setCheckoutToken(token);
-//       } catch (error) {}
-//     };
-//     generateToken();
-// }, [cart]);
-
 const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
 const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
@@ -111,18 +95,18 @@ const refreshCart = () => {
 // *** Event handlers ***
 const onCaptureCheckout = async (checkoutTokenId, newOrder) => {
   try {
-    console.log("onCaptureCheckout checkoutTokenId: ",checkoutTokenId );
-
+    
     const incomingOrder = await commerce.checkout.capture(
       checkoutTokenId,
       newOrder
-    );
-
+      );
+      
+      console.log("incomingOrder: ",incomingOrder );
     setOrder(incomingOrder);
 
     refreshCart();
   } catch (error) {
-    console.log("onCaptureCheckout: ", error)
+    console.log("onCaptureCheckout 2: ", error)
     setErrorMessage(error.data.error.message);
   }
 };

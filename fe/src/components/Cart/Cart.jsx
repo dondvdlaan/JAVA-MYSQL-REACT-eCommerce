@@ -26,6 +26,7 @@ console.log("cart in Cart component", cart)
 
 // *** Event handlers ***
 const handleUpdateCartQty = (itemID, quantity) => {
+    
     apiSimple("PUT",`cartQuantities/${cart.cartID}/${itemID}`,{quantity:quantity})
     .then(resCart=>setCart(resCart.data))
     // .then(resCart=>console.log(resCart.data))

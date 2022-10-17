@@ -2,7 +2,9 @@ import { Typography, Button, Card, CardActions, CardContent, CardMedia } from '@
 
 import css from './CartItem.module.css';
 
-
+/**
+ * Component to display each item in the cart at its own card
+ */
 const CartItem = ({ item, onUpdateCartQty, onRemoveFromCart }) => {
 
 return (

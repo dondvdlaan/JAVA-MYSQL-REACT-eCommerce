@@ -12,7 +12,8 @@ import Review from "./Review";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 /**
- * Main Component
+ * Component to show the items review and requiring payment details ie card
+ * number, expiration date and CVC
  */
 const PaymentForm = ({
   checkoutToken,
@@ -23,11 +24,14 @@ const PaymentForm = ({
 }) => {
 
   console.log("PaymentForm shiipingData", shippingData )
+
 // *** Event handlers **
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
     if (!stripe || !elements) return;
+
+    console.log("PaymentForm elements ",elements);
 
     const cardElement = elements.getElement(CardElement);
 
@@ -39,7 +43,7 @@ const PaymentForm = ({
       console.log("[error]", error);
     } else {
       const orderData = {
-        line_items: checkoutToken.live.line_items,
+        line_items: checkoutToken.live.lineItems,
         customer: {
           firstname: shippingData.firstName,
           lastname: shippingData.lastName,
@@ -72,6 +76,8 @@ const PaymentForm = ({
       };
 
       console.log("Payment OrderData: ", orderData);
+      console.log("paymentMethod", paymentMethod);
+      console.log("cardElement", cardElement);
 
       onCaptureCheckout(checkoutToken.id, orderData);
 
@@ -102,7 +108,7 @@ const PaymentForm = ({
                   disabled={!stripe}
                   color="primary"
                 >
-                  Pay {checkoutToken.live.subtotal.formatted_with_symbol}
+                  Pay {checkoutToken.live.subTotal.formattedWithSymbol}
                 </Button>
               </div>
             </form>

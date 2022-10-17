@@ -65,6 +65,8 @@ public class CheckoutController {
             token.getProducts().add(p);
         });
 
+        token.setCartID(currentCart.getCartID());
+
     return checkoutRepository.save(token);
     }
     /**

@@ -18,7 +18,7 @@ public class CheckOutToken {
     // *** Declaration and initialisation attributes ***
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int tokenID;
+    private int id;
 
     // Unidirectional 1-to-many Items relationship. tokenID is FK at Item table.
     @OneToMany(cascade = {CascadeType.ALL})
@@ -35,28 +35,31 @@ public class CheckOutToken {
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "tokenID")
     private List<Product> products = new ArrayList<>();
+    private int cartID;
 
     // *** Constructors ***
+
     public CheckOutToken() {
         this.live = new Live();
         this.merchant = new Merchant();
     }
 
-    public CheckOutToken(int tokenID, List<Item> lineItems, Live live, Merchant merchant, List<Product> products) {
-        this.tokenID = tokenID;
+    public CheckOutToken(int tokenID, List<Item> lineItems, Live live, Merchant merchant, List<Product> products, int cartID) {
+        this.id = tokenID;
         this.lineItems = lineItems;
         this.live = live;
         this.merchant = merchant;
         this.products = products;
+        this.cartID = cartID;
     }
     // *** Getter und Setter ***
 
-    public int getTokenID() {
-        return tokenID;
+    public int getId() {
+        return id;
     }
 
-    public void setTokenID(int tokenID) {
-        this.tokenID = tokenID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Item> getLineItems() {
@@ -91,14 +94,23 @@ public class CheckOutToken {
         this.products = products;
     }
 
+    public int getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(int cartID) {
+        this.cartID = cartID;
+    }
+
     @Override
     public String toString() {
         return "CheckOutToken{" +
-                "tokenID=" + tokenID +
+                "tokenID=" + id +
                 ", lineItems=" + lineItems +
                 ", live=" + live +
                 ", merchant=" + merchant +
                 ", products=" + products +
+                ", cartID=" + cartID +
                 '}';
     }
 }

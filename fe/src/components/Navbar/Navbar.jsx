@@ -16,8 +16,8 @@ import css from "./Navbar.module.css";
 
 const Navbar = ({cartID, totalItems }) => {
 
-  console.log("cartID: ", cartID);
-  console.log("totalItems: ", totalItems);
+  // console.log("cartID: ", cartID);
+  console.log("totalItems in Navbar: ", totalItems);
   
   const location = useLocation();
 

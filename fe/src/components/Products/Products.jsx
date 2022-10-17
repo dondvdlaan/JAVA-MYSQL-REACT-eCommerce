@@ -25,10 +25,16 @@ const [cart, setCart]           = useApi(`cart/${cartID}`);
 if(!products) return <p>Loading products...</p>
 if(!cart) return <p>Loading cart...</p>
 
+console.log("Products cartID ", cartID)
+console.log("Products cart.cartID ", cart.cartID)
+console.log("Products cart.totalItems ", cart.totalItems)
+
 // *** Event handlers ***
-const handleAddToCart = (productId, quantity) => {
+const handleAddToCart = ( productId, quantity) => {
+
+    console.log("now in handleAddToCart ")
     
-    apiSimple("POST",`addToCart/${cart.cartID}/${productId}`,{quantity:quantity})
+    apiSimple("GET",`addToCart/${cart.cartID}/${productId}/${quantity}`)
     .then(res=> setCart(res.data))
     // .then(res=> console.log("res",res))
     .catch(err=> console.log(err))
