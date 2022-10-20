@@ -2,6 +2,9 @@ package com.manyroadsdev.server.model;
 
 import javax.persistence.*;
 
+/**
+ * Class Item is a central theme which goes from the cart to a possible new order
+ */
 @Entity
 public class Item {
 
@@ -25,6 +28,7 @@ public class Item {
     private int prodID;
 
     // *** Constructors ***
+
     public Item() {
         this.itemImage = DEF_VALUE_STR;
         this.productName = DEF_VALUE_STR;
@@ -53,12 +57,11 @@ public class Item {
         this.prodID = prodID;
     }
 
-    // *** Getter und Setter ***
     public int getItemID() {
         return itemID;
     }
 
-    public void setItemID(Integer itemID) {
+    public void setItemID(int itemID) {
         this.itemID = itemID;
     }
 
@@ -82,7 +85,7 @@ public class Item {
         return itemQuantity;
     }
 
-    public void setItemQuantity(Integer itemQuantity) {
+    public void setItemQuantity(int itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
 
@@ -106,7 +109,7 @@ public class Item {
         return prodID;
     }
 
-    public void setProdID(Integer prodID) {
+    public void setProdID(int prodID) {
         this.prodID = prodID;
     }
 

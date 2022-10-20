@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
+/**
+ * Class Product is used for all products in store, after that, once the product is
+ * in the cart class Item is applied
+ */
 @Entity
 public class Product {
 

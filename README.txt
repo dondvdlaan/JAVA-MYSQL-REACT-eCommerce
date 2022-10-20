@@ -15,3 +15,5 @@ Summary
 
 For testing you can use card number 4242 4242 4242 4242 for stripe payment, expire date 
 any date in the future and CVC any number.
+
+

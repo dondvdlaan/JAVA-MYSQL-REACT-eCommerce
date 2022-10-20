@@ -3,15 +3,13 @@ import { AddShoppingCart } from "@mui/icons-material";
 
 import css from './Product.module.css';
 
-
+/**
+ * Product component to show each individula product on its own card
+ */
 const Product = ({ product, onAddToCart }) => {
     
-    console.log("Product: ", product)
-
     return (
     <>
-   
-
      <Card className={css.root}>
          <CardMedia 
          component="img" 

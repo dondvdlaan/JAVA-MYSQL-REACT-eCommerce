@@ -1,27 +1,34 @@
+.title {
+  padding-top: 2%;
+  padding-bottom: 1%;
+}
+.toolbar {
+    min-height: 44px;
+}
 .link{
-    text-decoration: 'none';
-  }
+  text-decoration: none;  
+  padding-left: 0.5%;
+  color: rgb(15, 73, 93);
+}
+.link:hover {
+  text-decoration: underline;
+}
 
 .cardDetails {
-    display: 'flex';
-    margin-top: '10%';
-    width: '100%';
-    justify-content: 'space-between';
+    display: flex;
+    margin-top: 2%;
+    width: 100%;
+    justify-content: space-between;
   }
 
 .emptyButton {
-    min-width: '150px';
-    margin-bottom: '5px';
-    margin-right: '20px';
+    min-width: 150px;
+    margin-bottom: 5px;
+    margin-right: 20px;
   }
 .checkoutButton {
-    min-width: '150px';
+    min-width: 150px;
   }
 
-  .title {
-    margin-top: '5%';
-  }
+
   
-  .toolbar {
-    min-height: 64px;
-  }

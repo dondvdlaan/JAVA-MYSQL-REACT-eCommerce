@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Typography, List, ListItem, ListItemText } from "@mui/material";
 
 /**
@@ -7,8 +5,6 @@ import { Typography, List, ListItem, ListItemText } from "@mui/material";
  * total price
  */
 const Review = ({ checkoutToken }) => {
-
-  console.log("Review checkoutToken: ", checkoutToken)
 
   return (
     <>

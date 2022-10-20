@@ -22,9 +22,11 @@ public class ShippingOption {
     private Price price;
 
     // *** Constructors ***
-
     public ShippingOption() {
+        this.optionDescription = DEF_VALUE_STR;
+        this.price = new Price();
     }
+
 
     public ShippingOption(String optionDescription, Price price) {
         this.optionDescription = optionDescription;

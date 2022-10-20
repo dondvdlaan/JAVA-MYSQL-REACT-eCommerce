@@ -105,7 +105,7 @@ public class CheckoutController {
     @GetMapping("/options/{provID}")
     public List<ShippingOption> getOptions(@PathVariable int provID) {
 
-        System.out.println("Route allOptions");
+        System.out.println("Route getOptions");
 
         Province province = provinceRepository.findById(provID).get();
         return province.getOptions();

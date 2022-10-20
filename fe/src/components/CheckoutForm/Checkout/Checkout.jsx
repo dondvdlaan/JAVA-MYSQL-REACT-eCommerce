@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useParams } from 'react-router-dom';
 import {
   Paper,
@@ -11,12 +11,11 @@ import {
   Button
 } from "@mui/material";
 
-import { commerce } from "../../../lib/commerce";
 import css from "./Checkout.module.css";
 import AddressForm from "../AddressForm";
 import PaymentForm from "../PaymentForm";
 
-import { useApi} from '../../../shared/Api';
+import { useApi, apiSimple} from '../../../shared/Api';
 
 const steps = ["Shipping Address", "Payment Details"];
 
@@ -37,9 +36,6 @@ const [shippingData, setShippingData]   = useState({});
 if(!cart) return <p>Loading cart...</p>
 if(!checkoutToken) return <p>Loading checkoutToken...</p>
 
-console.log("checkoutToken: ", checkoutToken)
-console.log("shippingData: ", shippingData)
-
 // *** Functions ***
 const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
 const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -55,12 +51,12 @@ let Confirmation = () =>
       <>
         <div>
           <Typography variant="h5">
-            Thank you for your purchase, {order.customer.firstname}{" "}
-            {order.customer.lastname}!
+            Thank you for your purchase, {order.customer.custFirstName}{" "}
+            {order.customer.custLastName}!
           </Typography>
           <Divider className={css.divider} />
           <Typography variant="subtitle2">
-            Order Ref: {order.customer_reference}
+            Order Ref: {order.customerReference}
           </Typography>
         </div>
         <br />
@@ -74,12 +70,7 @@ let Confirmation = () =>
       </div>
     );
 
-const refreshCart = () => {
-  commerce.cart.refresh()
-  .then(newCart => setCart(newCart))
-};
-
-// Check errormessage before continuing
+  // Check error message before continuing
   if (errorMessage != "") {
     Confirmation = () => (
       <>
@@ -94,21 +85,14 @@ const refreshCart = () => {
 
 // *** Event handlers ***
 const onCaptureCheckout = async (checkoutTokenId, newOrder) => {
-  try {
     
-    const incomingOrder = await commerce.checkout.capture(
-      checkoutTokenId,
-      newOrder
-      );
-      
-      console.log("incomingOrder: ",incomingOrder );
-    setOrder(incomingOrder);
+    apiSimple("POST",`newOrder/${checkoutToken.id}`, newOrder)
+    .then(res=> setOrder(res.data))
+    // .then(res=> console.log("newOrder",res))
+    .catch(err=> {
 
-    refreshCart();
-  } catch (error) {
-    console.log("onCaptureCheckout 2: ", error)
-    setErrorMessage(error.data.error.message);
-  }
+      setErrorMessage(err);
+      console.log(err)})
 };
 
 // *** Components ***

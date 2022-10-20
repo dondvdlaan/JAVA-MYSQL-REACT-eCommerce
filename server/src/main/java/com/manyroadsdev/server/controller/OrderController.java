@@ -1,18 +1,11 @@
 package com.manyroadsdev.server.controller;
 
-import com.manyroadsdev.server.logic.helper;
 import com.manyroadsdev.server.model.*;
-import com.manyroadsdev.server.repository.CartRepository;
-import com.manyroadsdev.server.repository.ItemRepository;
-import com.manyroadsdev.server.repository.ProductRepository;
-import com.manyroadsdev.server.services.CartServices;
+import com.manyroadsdev.server.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import javax.persistence.criteria.Order;
 
 @CrossOrigin
 @RestController
@@ -22,17 +15,25 @@ public class OrderController {
 
     // *** Declaration and initialisation of attributes ***
     @Autowired
-    private CartRepository cartRepository;
-    @Autowired
-    private CartServices cartServices;
-    @Autowired
-    private ItemRepository itemRepository;
-    @Autowired
-    private ProductRepository productRepository;
+    private OrderRepository orderRepository;
 
 
     // *** Routing ***
     /**
-     * Initialise fresh Cart at start of shopping session or
+     * Receiving new order
      */
+    @PostMapping("/newOrder/{checkOutToken}")
+    public PurchaseOrder getNewOrder(@PathVariable int checkOutToken, @RequestBody PurchaseOrder newOrder  ){
+
+        System.out.println("Route getNewOrder");
+
+        // Save newOrder to generate new ID
+        PurchaseOrder currentOrder = orderRepository.save(newOrder);
+
+        // Set customer reference as feedback to customer
+        currentOrder.setCustomerReference(currentOrder.getCustomer().getCustLastName(),currentOrder.getOrderID());
+
+        return orderRepository.save(currentOrder);
+    }
+
 }

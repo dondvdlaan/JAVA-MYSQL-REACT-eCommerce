@@ -2,7 +2,9 @@ package com.manyroadsdev.server.model;
 
 import javax.persistence.*;
 
-
+/**
+ * This class sets the currency to be used per session
+ */
 
 @Entity
 public class Currency {
@@ -33,7 +35,7 @@ public class Currency {
         this.code = code;
         this.symbol = symbol;
     }
-
+    // *** Getter und Setter ***
     public Integer getCurrencyID() {
         return currencyID;
     }
@@ -56,5 +58,14 @@ public class Currency {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    @Override
+    public String toString() {
+        return "Currency{" +
+                "currencyID=" + currencyID +
+                ", code='" + code + '\'' +
+                ", symbol='" + symbol + '\'' +
+                '}';
     }
 }

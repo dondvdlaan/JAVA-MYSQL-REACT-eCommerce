@@ -1,9 +1,8 @@
-import React from "react";
 import { TextField, Grid } from "@mui/material";
 import { useFormContext, Controller } from "react-hook-form";
 
 /**
- * This component is used in the AddressForm and is used as wrapper for the
+ * This component is used in the AddressForm and is a wrapper for the
  * MUI TextField. 
  */
 const FormInput = ({ name, label }) => {

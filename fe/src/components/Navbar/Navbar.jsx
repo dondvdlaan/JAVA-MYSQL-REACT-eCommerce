@@ -1,11 +1,8 @@
-import React from "react";
 import {
   AppBar,
   Toolbar,
   IconButton,
   Badge,
-  MenuItem,
-  Menu,
   Typography
 } from "@mui/material";
 import { ShoppingCart } from "@mui/icons-material";
@@ -14,11 +11,12 @@ import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo-website.png";
 import css from "./Navbar.module.css";
 
+/**
+ * The NavBar component is shown at the home and cartpages, displaying the logo, 
+ * title and cart.
+ */
 const Navbar = ({cartID, totalItems }) => {
 
-  // console.log("cartID: ", cartID);
-  console.log("totalItems in Navbar: ", totalItems);
-  
   const location = useLocation();
 
   return (
@@ -29,7 +27,7 @@ const Navbar = ({cartID, totalItems }) => {
             component={Link}
             to={`/${cartID}`}
             variant="h5"
-            className={css.appBar}
+            // className={css.appBar}
             color="inherit"
           >
             <img
@@ -40,12 +38,13 @@ const Navbar = ({cartID, totalItems }) => {
             />
           </Typography>
 
-          <div className={css.grow} />
+          {/* <div className={css.grow} /> */}
           <Typography 
-          align="justify"
+          component="div"
+          className={css.title}
           variant="h4"
           >
-          TOYOTA COLLECTION
+          Furniture for your new home
           </Typography>
 
           {/* {location.pathname === ("/" || `/${cartID}`) && ( */}
@@ -55,6 +54,7 @@ const Navbar = ({cartID, totalItems }) => {
                 to={`/cart/${cartID}`}
                 aria-label="Show cart item"
                 color="inherit"
+                className={css.icon}
               >
                 <Badge badgeContent={totalItems} color="secondary">
                   <ShoppingCart />

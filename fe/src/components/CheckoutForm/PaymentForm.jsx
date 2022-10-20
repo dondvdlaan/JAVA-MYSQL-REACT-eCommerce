@@ -1,4 +1,3 @@
-import React from "react";
 import { Typography, Button, Divider } from "@mui/material";
 import {
   Elements,
@@ -6,7 +5,6 @@ import {
   ElementsConsumer
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-
 import Review from "./Review";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
@@ -23,15 +21,12 @@ const PaymentForm = ({
   onCaptureCheckout
 }) => {
 
-  console.log("PaymentForm shiipingData", shippingData )
 
 // *** Event handlers **
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
     if (!stripe || !elements) return;
-
-    console.log("PaymentForm elements ",elements);
 
     const cardElement = elements.getElement(CardElement);
 
@@ -42,42 +37,40 @@ const PaymentForm = ({
     if (error) {
       console.log("[error]", error);
     } else {
+
       const orderData = {
-        line_items: checkoutToken.live.lineItems,
+        orderLineItems: checkoutToken.live.lineItems,
         customer: {
-          firstname: shippingData.firstName,
-          lastname: shippingData.lastName,
-          email: shippingData.email
+          custFirstName: shippingData.firstName,
+          custLastName: shippingData.lastName,
+          custEmail: shippingData.email
         },
         shipping: {
-          name: "International",
-          street: shippingData.address1,
-          town_city: shippingData.city,
-          county_state: shippingData.shippingSubdivision,
-          postal_zip_code: shippingData.zip,
-          country: shippingData.shippingCountry
+          addressName: "International",
+          addressStreet: shippingData.address1,
+          addressTownCity: shippingData.city,
+          addressCountyState: shippingData.shippingSubdivision,
+          addressZipCode: shippingData.zip,
+          addressCountry: shippingData.shippingCountry
         },
-        fulfillment: { shipping_method: shippingData.shippingOption },
+        fulfillment: shippingData.shippingOption ,
+        // fulfillment: { shipping_method: shippingData.shippingOption },
         billing: {
-          name: 'John Doe',
-          street: '234 Fake St',
-          town_city: 'San Francisco',
-          county_state: 'US-CA',
-          postal_zip_code: '94103',
-          country: 'US'
+          addressName: 'John Doe',
+          addressStreet: '234 Fake St',
+          addressTownCity: 'San Francisco',
+          addressCountyState: 'US-CA',
+          addressZipCode: '94103',
+          addressCountry: 'US'
         },
-        payment: {
-          gateway: "stripe",
-          stripe: {
-            payment_method_id: paymentMethod.id
-          }
-        },
-        pay_what_you_want: '149.99'
+        // payment: {
+        //   gateway: "stripe",
+        //   stripe: {
+        //     payment_method_id: paymentMethod.id
+        //   }
+        // },
+        // pay_what_you_want: '149.99'
       };
-
-      console.log("Payment OrderData: ", orderData);
-      console.log("paymentMethod", paymentMethod);
-      console.log("cardElement", cardElement);
 
       onCaptureCheckout(checkoutToken.id, orderData);
 

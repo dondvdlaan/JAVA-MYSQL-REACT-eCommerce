@@ -2,11 +2,15 @@ package com.manyroadsdev.server.model;
 
 import javax.persistence.*;
 
+/**
+ * This class stores the raw price and formatted strings to be used in the frontend
+ */
 @Entity
 public class Price {
 
     // *** Constants ***
     private static final int DEF_VALUE_INT = -1;
+    private static final double DEF_VALUE_DBL = -1D;
     private static final String DEF_VALUE_STR = ">nothingToSeeHere<";
 
     // *** Declaration and initialisation attributes ***
@@ -20,6 +24,10 @@ public class Price {
 
     // *** Constructors ***
     public Price() {
+        this.formatted = DEF_VALUE_STR;
+        this.formattedWithCode = DEF_VALUE_STR;
+        this.formattedWithSymbol = DEF_VALUE_STR;
+        this.raw = DEF_VALUE_DBL;
     }
 
     public Price(String formatted, String formattedWithCode, String formattedWithSymbol, double raw) {
@@ -36,9 +44,9 @@ public class Price {
      *     raw:                    5
      */
     public Price(String symbol, double price, String code) {
-        this.formatted = Double.toString(price);
-        this.formattedWithCode = Double.toString(price) + " " + code;
-        this.formattedWithSymbol = symbol + Double.toString(price);
+        this.formatted = String.format("%.2f",price);
+        this.formattedWithCode = String.format("%.2f",price) + " " + code;
+        this.formattedWithSymbol = symbol + String.format("%.2f",price);
         this.raw = price;
     }
     // *** Getter und Setter ***

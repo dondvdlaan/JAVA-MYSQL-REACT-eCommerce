@@ -39,9 +39,13 @@ public class CheckOutToken {
 
     // *** Constructors ***
 
+
     public CheckOutToken() {
+        this.lineItems = new ArrayList<>();
         this.live = new Live();
         this.merchant = new Merchant();
+        this.products = new ArrayList<>();
+        this.cartID = DEF_VALUE_INT;
     }
 
     public CheckOutToken(int tokenID, List<Item> lineItems, Live live, Merchant merchant, List<Product> products, int cartID) {

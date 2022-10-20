@@ -34,9 +34,12 @@ public class Live {
 
     // *** Constructors ***
 
+
     public Live() {
         this.currency = new Currency();
+        this.lineItems = new ArrayList<>();
         this.merchantID = DEF_VALUE_INT;
+        this.subTotal = new Total();
     }
 
     public Live(int liveID, Currency currency, List<Item> lineItems, int merchantID, Total subTotal) {

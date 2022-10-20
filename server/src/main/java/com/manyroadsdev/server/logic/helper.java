@@ -8,9 +8,9 @@ import org.json.JSONObject;
 public class helper {
 
     /**
-     * This nethode converts a String/Object paramater in to an Integer
-     * @param quantity          String/object   : quantity o be converted
-     * @return ietemQuantity    int             : converted quantity
+     * This nethode converts a String/JSON Object paramater in to an Integer
+     * @param quantity      [String/JSONobject]   : quantity o be converted
+     * @return itemQuantity [int]                 : converted quantity
      */
     public  static int objectToInteger(String quantity){
 

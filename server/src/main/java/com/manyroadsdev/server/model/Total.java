@@ -2,6 +2,9 @@ package com.manyroadsdev.server.model;
 
 import javax.persistence.*;
 
+/**
+ * Class used to store totals with formatted strings
+ */
 @Entity
 public class Total {
 
@@ -42,9 +45,9 @@ public class Total {
      *     raw:                    5
      */
     public Total(String symbol, double total, String code) {
-        this.formatted = Double.toString(total);
-        this.formattedWithCode = Double.toString(total) + " " + code;
-        this.formattedWithSymbol = symbol + Double.toString(total);
+        this.formatted = String.format("%.2f",total);
+        this.formattedWithCode = String.format("%.2f",total) + " " + code;
+        this.formattedWithSymbol = symbol + String.format("%.2f",total);
         this.raw = total;
     }
 

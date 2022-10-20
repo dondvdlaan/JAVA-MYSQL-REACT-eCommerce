@@ -9,6 +9,7 @@ import java.util.List;
  */
 @Entity
 public class Province {
+
     // *** Constants ***
     private static final int DEF_VALUE_INT = -1;
     private static final String DEF_VALUE_STR = ">nothingToSeeHere<";
@@ -25,7 +26,11 @@ public class Province {
 
     // *** Constructors ***
 
+
     public Province() {
+        this.provCode = DEF_VALUE_STR;
+        this.provName = DEF_VALUE_STR;
+        this.options = new ArrayList<>();
     }
 
     public Province(String provCode, String provName) {

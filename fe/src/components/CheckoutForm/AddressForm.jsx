@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   InputLabel,
   Select,
@@ -38,9 +38,6 @@ const AddressForm = ({ checkoutToken, next }) => {
   const methods = useForm();
 
   if(!countries) return <p>Loading countries...</p>
-
-  console.log("Countries: ", countries);
-  console.log("subdivisions: ", subdivisions);
 
   return (
     <>

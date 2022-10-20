@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from "react";
 import { Container, Typography, Button, Grid } from '@mui/material';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import CartItem from './CartItem/CartItem';
 import Navbar from '../Navbar/Navbar';
-import Checkout from '../CheckoutForm/Checkout/Checkout';
 
 import css from './Cart.module.css'
-import { commerce } from "../../lib/commerce";
 import { useApi, apiSimple } from '../../shared/Api';
 
 /**
  * Cart Component which displays items in cart and where you can change the
- * quantities or remove the items altogether- 
+ * quantities or remove the items altogether. 
  */
 const Cart = () => {
 
@@ -21,8 +18,6 @@ const {cartID}          = useParams();
 const [cart, setCart]   = useApi(`cart/${cartID}`);
 
 if(!cart) return <p>Loading cart...</p>
-
-console.log("cart in Cart component", cart)
 
 // *** Event handlers ***
 const handleUpdateCartQty = (itemID, quantity) => {
@@ -43,24 +38,18 @@ const onEmptyCart = () => {
     .then(resCart => setCart(resCart.data))
   };
 
-// *** Functions ***
-const refreshCart = () => {
-    commerce.cart.refresh()
-    .then(newCart => setCart(newCart))
-  };
-
 // *** Components ***
 const EmptyCart = () => (
-    <Typography variant="body1">You have no items in your shopping cart, 
+    <Typography  variant="body1">You have no items in your shopping cart,  
         <Link to="/" className={css.link}>
-            start adding some
+             start adding some
         </Link>!
     </Typography>
 );
 
 const FilledCart = () => (
     <>
-         <Grid container spacing={3}>
+        <Grid container spacing={3}>
             {cart.cartLineItems.map((item) => (
                 <Grid item xs={12} sm={4} key={item.itemID}>
                     <CartItem item={item} onUpdateCartQty={handleUpdateCartQty} onRemoveFromCart={handleRemoveFromCart}/>
@@ -80,10 +69,9 @@ const FilledCart = () => (
 return (
     <>
         <Navbar cartID={cart.cartID} totalItems={ cart.totalItems}  />
-        <br />
         <Container>
             <div className={css.toolbar} />
-            <Typography className={css.title} variant="h3" >
+            <Typography className={css.title} variant="h4" >
                 Your Shopping Cart
             </Typography>
             { !cart.cartLineItems.length ? <EmptyCart /> : <FilledCart />}
@@ -91,7 +79,5 @@ return (
     </>
 )
 }
-
-
 
 export default Cart

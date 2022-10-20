@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 
 import { Grid } from '@mui/material';
@@ -6,13 +5,11 @@ import { Grid } from '@mui/material';
 import Product from './Product/Product';
 import Navbar from './../Navbar/Navbar';
 
-import { commerce } from "../../lib/commerce";
-
 import css from './Products.module.css'
 import { useApi, apiSimple} from '../../shared/Api';
 
 /**
- * Component Products will call up the products from back-end and show in store
+ * Component Products will call up the products from back-end and show them in store
  */
 const Products = () => {
 
@@ -25,23 +22,14 @@ const [cart, setCart]           = useApi(`cart/${cartID}`);
 if(!products) return <p>Loading products...</p>
 if(!cart) return <p>Loading cart...</p>
 
-console.log("Products cartID ", cartID)
-console.log("Products cart.cartID ", cart.cartID)
-console.log("Products cart.totalItems ", cart.totalItems)
-
 // *** Event handlers ***
 const handleAddToCart = ( productId, quantity) => {
 
-    console.log("now in handleAddToCart ")
-    
     apiSimple("GET",`addToCart/${cart.cartID}/${productId}/${quantity}`)
     .then(res=> setCart(res.data))
     // .then(res=> console.log("res",res))
     .catch(err=> console.log(err))
 };
-
-// *** Functions **
-
 
 return (
     <>

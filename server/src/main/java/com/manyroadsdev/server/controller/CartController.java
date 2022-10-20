@@ -70,16 +70,15 @@ public class CartController {
      *
      * @param cartID   int      : ID of current cart
      * @param prodID   int      : ID of Product to be added
-     * @param prodQuantity int   : Product quantity
+     * @param prodQuantity int  : Product quantity
      */
     @GetMapping("/addToCart/{cartID}/{prodID}/{prodQuantity}")
     public
-    Cart addToCart(@PathVariable int cartID, @PathVariable int prodID, @PathVariable int prodQuantity) {
+   ResponseEntity< Cart> addToCart(@PathVariable int cartID, @PathVariable int prodID, @PathVariable int prodQuantity) {
 
         System.out.println("Route addToCart");
 
         // *** Declaration and initialisation attributes ***
-        //int prodQuantity = helper.objectToInteger(quantity);
         Currency euro = new Currency("Euro","€");
         Cart returnCart = new Cart();
         boolean itemExists = false;
@@ -108,7 +107,7 @@ public class CartController {
                 item.setLineTotal(new Total(euro.getSymbol(),currentLineTotalRaw + increaseLineTotalRaw,euro.getCode()));
             }
         }
-        // if new Product, start adding
+        // If Product is new, start adding
         if (!itemExists) {
 
             // Find new Product to be added
@@ -136,17 +135,13 @@ public class CartController {
         currentCart.setCartSubTotal(new Total(euro.getSymbol(),cartSubTotalRaw,euro.getCode()));
 
         // Adjust cartTotalItems
-        int temp = currentCart.getTotalItems();
-        temp += prodQuantity;
-        currentCart.setTotalItems(temp);
+        currentCart.setTotalItems(currentCart.getTotalItems() + prodQuantity);
 
         // Unique items is same as length of cartLine Items array
         currentCart.setTotalUniqueItems(currentCart.getCartLineItems().size());
 
     // Save cart and return
-       returnCart = cartRepository.save(currentCart);
-
-    return returnCart;
+    return ResponseEntity.ok( cartRepository.save(currentCart));
     }
 
     /**
@@ -184,11 +179,9 @@ public class CartController {
 
                 changeValue =(itemQuantity - currentQuantity) * item.getPrice().getRaw();
 
-
                 // Adjust lineTotal
                 double currentLineTotalRaw= item.getLineTotal().getRaw();
                 item.setLineTotal(new Total("€",currentLineTotalRaw + changeValue,"Euro"));
-
             }
         }
         // Adjust cartSubTotal

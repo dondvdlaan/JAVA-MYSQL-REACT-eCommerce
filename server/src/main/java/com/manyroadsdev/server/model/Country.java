@@ -25,6 +25,9 @@ public class Country {
 
     // *** Constructors ***
     public Country() {
+        this.countryCode = DEF_VALUE_STR;
+        this.countryName = DEF_VALUE_STR;
+        this.provinces = new ArrayList<>();
     }
 
     public Country(int countryID, String countryCode, String countryName, List<Province> provinces) {

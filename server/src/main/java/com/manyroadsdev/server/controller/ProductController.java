@@ -17,20 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
     // *** Routing ***
     /**
-     *  Testing of FE - BE communication
-     * @return String : Just any reply
-     */
-        @GetMapping("/greeting")
-        public String greeting() {
-
-            System.out.println("in greeting");
-
-            return "Holo!";
-        }
-
-    /**
      *  All products are called
-     * @return  Iterable Collection of Objects : all Products
+     * @return  [Iterable] Collection of Objects : all Products
      */
         @GetMapping("/products")
         public @ResponseBody Iterable getAllProducts(){
@@ -42,14 +30,13 @@ import org.springframework.web.bind.annotation.*;
 
     /**
      * Add 1 product
-     * @param "Product" newProduct : Product to be added
+     * @param [Product] newProduct : Product to be added
      */
         @PostMapping("/addProduct")
         public void addProduct(@RequestBody Product newProduct) {
 
-            System.out.println("newProduct Item: " + newProduct);
+            System.out.println("Route addProduct");
 
             productRepository.save(newProduct);
         }
-
     }
