@@ -1,19 +1,21 @@
 JAVA-Spring-MySQL-REACT-eCommerce Application
 
-This example shows an simple eCommerce application, where an administrator can edit 
-with dashboard the products to be offered and sold and a customer can browse 
-the products in a REACT front-end. In the front-end MUI and react-hook-form 
-have been applied.
+This example shows an simple eCommerce application, where products are displayed, a customer 
+can browse and put them in a cart and continue to checkout.
+The frontend consits of REACT with MUI and react-hook-form.
 
 At the back-end the JAVA-Spring-MySQL stack is serving the fromt-end.
 
 Summary
-- Front-end:    REACT and Material UI
+- Front-end:    REACT, Material UI and react-hook-form 
 - Back-end:     JAVA/Spring 
 - Database:     MySQL
 - IDE:          IntelliJ
 
 For testing you can use card number 4242 4242 4242 4242 for stripe payment, expire date 
-any date in the future and CVC any number.
+is any date in the future and for the CVC any number is valid.
+
+At start up, the main Java class will fill in a demo database, so one test the applicatiion
+with products.
 
 
