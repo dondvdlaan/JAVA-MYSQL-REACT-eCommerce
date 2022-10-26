@@ -4,31 +4,50 @@ import {
   CardElement,
   ElementsConsumer
 } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, Stripe, StripeElements } from "@stripe/stripe-js";
+import { FieldValues } from "react-hook-form";
+import { CheckoutToken } from "../../types/CheckoutToken";
+import { POWithoutCustomerRef } from "../../types/PurchaseOrder";
 import Review from "./Review";
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
+// ! at end will tell Typescript, that you will be responsible for no undefined value
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY !);
+
+interface Props{
+  checkoutToken: CheckoutToken;
+  nextStep: () => void;
+  backStep: () => void;
+  shippingData: FieldValues;
+  onCaptureCheckout: (a: number, b: POWithoutCustomerRef) => void;
+}
 
 /**
  * Component to show the items review and requiring payment details ie card
  * number, expiration date and CVC
  */
-const PaymentForm = ({
-  checkoutToken,
-  nextStep,
-  backStep,
-  shippingData,
-  onCaptureCheckout
-}) => {
+const PaymentForm = (props: Props) => {
+
+  // *** Constants and variables ***
+  const checkoutToken = props.checkoutToken;
+  const shippingData = props.shippingData;
 
 
-// *** Event handlers **
-  const handleSubmit = async (event, elements, stripe) => {
+  // *** Event handlers **
+  const handleSubmit = async  (event: React.FormEvent<HTMLFormElement>,
+                               elements: StripeElements | null,
+                               stripe: Stripe | null) => {
     event.preventDefault();
 
-    if (!stripe || !elements) return;
+    if (!stripe || !elements){
+      throw new Error("Stripe or StripeElements are null!")
+    }
 
     const cardElement = elements.getElement(CardElement);
+
+    if (!cardElement){
+      throw new Error("CardElement is null!")
+    }
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
@@ -38,7 +57,7 @@ const PaymentForm = ({
       console.log("[error]", error);
     } else {
 
-      const orderData = {
+      const orderData: POWithoutCustomerRef = {
         orderLineItems: checkoutToken.live.lineItems,
         customer: {
           custFirstName: shippingData.firstName,
@@ -53,8 +72,7 @@ const PaymentForm = ({
           addressZipCode: shippingData.zip,
           addressCountry: shippingData.shippingCountry
         },
-        fulfillment: shippingData.shippingOption ,
-        // fulfillment: { shipping_method: shippingData.shippingOption },
+        fulfillment: shippingData.shippingOption,
         billing: {
           addressName: 'John Doe',
           addressStreet: '234 Fake St',
@@ -62,19 +80,12 @@ const PaymentForm = ({
           addressCountyState: 'US-CA',
           addressZipCode: '94103',
           addressCountry: 'US'
-        },
-        // payment: {
-        //   gateway: "stripe",
-        //   stripe: {
-        //     payment_method_id: paymentMethod.id
-        //   }
-        // },
-        // pay_what_you_want: '149.99'
+        }
       };
 
-      onCaptureCheckout(checkoutToken.id, orderData);
+      props.onCaptureCheckout(checkoutToken.id, orderData);
 
-      nextStep();
+      props.nextStep();
     }
   };
 
@@ -92,7 +103,7 @@ const PaymentForm = ({
               <CardElement />
               <br /> <br />
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="outlined" onClick={backStep}>
+                <Button variant="outlined" onClick={props.backStep}>
                   Back
                 </Button>
                 <Button

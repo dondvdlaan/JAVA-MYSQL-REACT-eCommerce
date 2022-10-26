@@ -7,7 +7,7 @@ The frontend consits of REACT with MUI and react-hook-form.
 At the back-end the JAVA-Spring-MySQL stack is serving the fromt-end.
 
 Summary
-- Front-end:    REACT, Material UI and react-hook-form 
+- Front-end:    REACT/TypeScript, Material UI and react-hook-form 
 - Back-end:     JAVA/Spring 
 - Database:     MySQL
 - IDE:          IntelliJ

@@ -7,31 +7,40 @@ import {
   Grid,
   Typography
 } from "@mui/material";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, FieldValues } from "react-hook-form";
 
 import { Link } from "react-router-dom";
-import FormInput from "./CustomTextField";
+import FormInput from "./FormInput";
 import { useApi, useApi2} from '../../shared/Api';
+import { Country, Subdivision, Option } from "../../types/Country";
+import { CheckoutToken } from "../../types/CheckoutToken";
+
+interface Props{
+  checkoutToken: CheckoutToken;
+  next: (data: FieldValues) => void;
+  nextStep: () => void;
+  setShippingData: React.Dispatch<React.SetStateAction<{}>>
+}
 
 /**
  * This Component requires from user to input Shipping Address
  */
-const AddressForm = ({ checkoutToken, next }) => {
+const AddressForm = (props: Props) => {
 
 // *** Constants and variables ***
 // Retrieving shipping countries from DB
-  const [countries, setCountries]                       = useApi(`countries`);
+  const [countries, setCountries]                       = useApi<Country []>(`countries`);
   const [shippingCountry, setShippingCountry]           = useState("");
 
 // Retrieving provinces/states in chosen country from DB
   const [subdivisions, setSubdivisions] = 
-  useApi2(`provinces/${shippingCountry}`,shippingCountry);
+  useApi2<Subdivision>(`provinces/${shippingCountry}`,shippingCountry);
   
   const [shippingSubdivision, setShippingSubdivision]   = useState("");
 
 // Retrieving options per provinces/states from DB
   const [options, setOptions] = 
-  useApi2(`options/${shippingSubdivision}`,shippingSubdivision);
+  useApi2<Option>(`options/${shippingSubdivision}`,shippingSubdivision);
 
   const [shippingOption, setShippingOption]             = useState("");
 
@@ -48,7 +57,7 @@ const AddressForm = ({ checkoutToken, next }) => {
       <FormProvider {...methods}>
         <form
           onSubmit={methods.handleSubmit((data) =>
-            next({
+            props.next({
               ...data,
               shippingCountry,
               shippingSubdivision,
@@ -111,7 +120,7 @@ const AddressForm = ({ checkoutToken, next }) => {
           <br />
 
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Button component={Link} to={`/cart/${checkoutToken.cartID}`} variant="outlined">
+            <Button component={Link} to={`/cart/${props.checkoutToken.cartID}`} variant="outlined">
               Back to cart
             </Button>
             <Button type="submit" variant="contained" color="primary">

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
-import Products from "./components/Products/Products"
-import Cart from "./components/Cart/Cart"
-import Checkout from "./components/CheckoutForm/Checkout/Checkout"
+import Products from "./products/Products"
+import Cart from "./cart/Cart"
+import Checkout from "./checkoutForm/checkout/Checkout"
 
 /**
  * Routing component for different pages of application

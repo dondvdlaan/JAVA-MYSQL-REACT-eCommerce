@@ -3,11 +3,16 @@ import { AddShoppingCart } from "@mui/icons-material";
 
 import css from './Product.module.css';
 
+import { ProductInterface} from '../../../types/ProductInterface';
+
 /**
- * Product component to show each individula product on its own card
+ * Product component to show each individual product on its own card
  */
-const Product = ({ product, onAddToCart }) => {
+const Product = (props: { product: ProductInterface, onAddToCart: (prodID: number, y: number) =>void }) => {
     
+    // *** Constants and variables ***
+    const product = props.product;
+
     return (
     <>
      <Card className={css.root}>
@@ -31,7 +36,7 @@ const Product = ({ product, onAddToCart }) => {
                 <Typography dangerouslySetInnerHTML={{ __html: product.prodDescription}} variant="h6" color="textSecondary" />
         </CardContent>
         <CardActions disableSpacing className={css.cardActions}>
-            <IconButton aria-label="Add to Cart" onClick={() => onAddToCart(product.prodID, 1)}>
+            <IconButton aria-label="Add to Cart" onClick={() => props.onAddToCart(product.prodID, 1)}>
                 <AddShoppingCart />
             </IconButton>
         </CardActions>
@@ -41,5 +46,4 @@ const Product = ({ product, onAddToCart }) => {
 }
 
 export default Product
-
 

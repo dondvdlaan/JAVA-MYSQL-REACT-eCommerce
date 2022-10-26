@@ -86,63 +86,65 @@ public class CartController {
         double increaseLineTotalRaw = 0D;
         double cartSubTotalRaw = 0D;
 
-        // Find current Cart
-        Cart currentCart = cartServices.getCartByID(cartID);
+        // Synchronized area to avoid fast clicking parallel threads going to DB vars
+        synchronized(this) {
+            // Find current Cart
+            Cart currentCart = cartServices.getCartByID(cartID);
 
-        // Check if Product to be added is already in cart
-        for (Item item : currentCart.getCartLineItems()) {
-            if (item.getProdID() == (prodID)) {
+            // Check if Product to be added is already in cart
+            for (Item item : currentCart.getCartLineItems()) {
+                if (item.getProdID() == (prodID)) {
 
-                // Set flag to inhibit new item creation
-                itemExists = true;
+                    // Set flag to inhibit new item creation
+                    itemExists = true;
 
-                // increase item quantity
-                int tempQuantity = item.getItemQuantity();
-                tempQuantity += prodQuantity;
-                item.setItemQuantity(tempQuantity);
+                    // increase item quantity
+                    int tempQuantity = item.getItemQuantity();
+                    tempQuantity += prodQuantity;
+                    item.setItemQuantity(tempQuantity);
 
-                // adjust lineTotal
-                currentLineTotalRaw= item.getLineTotal().getRaw();
-                increaseLineTotalRaw = (item.getPrice().getRaw() * prodQuantity);
-                item.setLineTotal(new Total(euro.getSymbol(),currentLineTotalRaw + increaseLineTotalRaw,euro.getCode()));
+                    // adjust lineTotal
+                    currentLineTotalRaw = item.getLineTotal().getRaw();
+                    increaseLineTotalRaw = (item.getPrice().getRaw() * prodQuantity);
+                    item.setLineTotal(new Total(euro.getSymbol(), currentLineTotalRaw + increaseLineTotalRaw, euro.getCode()));
+                }
             }
-        }
-        // If Product is new, start adding
-        if (!itemExists) {
+            // If Product is new, start adding
+            if (!itemExists) {
 
-            // Find new Product to be added
-            Product productToBeAdded = productRepository.findById(prodID).get();
+                // Find new Product to be added
+                Product productToBeAdded = productRepository.findById(prodID).get();
 
-            // Create new Item
-            Item newItem = new Item();
+                // Create new Item
+                Item newItem = new Item();
 
-            newItem.setItemImage(productToBeAdded.getProdImage());
-            newItem.setProductName(productToBeAdded.getProdName());
-            newItem.setItemQuantity(prodQuantity);
-            newItem.setPrice(productToBeAdded.getPrice());
-            newItem.setProdID(prodID);
+                newItem.setItemImage(productToBeAdded.getProdImage());
+                newItem.setProductName(productToBeAdded.getProdName());
+                newItem.setItemQuantity(prodQuantity);
+                newItem.setPrice(productToBeAdded.getPrice());
+                newItem.setProdID(prodID);
 
-            // Set Linetotal
-            increaseLineTotalRaw = productToBeAdded.getPrice().getRaw() * prodQuantity;
-            newItem.setLineTotal(new Total("€", increaseLineTotalRaw, "Euro"));
+                // Set Linetotal
+                increaseLineTotalRaw = productToBeAdded.getPrice().getRaw() * prodQuantity;
+                newItem.setLineTotal(new Total("€", increaseLineTotalRaw, "Euro"));
 
-            // Add new Item to cart
-            currentCart.getCartLineItems().add(newItem);
-        }
-        // Adjust cartSubTotal
-        cartSubTotalRaw = currentCart.getCartSubTotal().getRaw();
-        cartSubTotalRaw += increaseLineTotalRaw;
-        currentCart.setCartSubTotal(new Total(euro.getSymbol(),cartSubTotalRaw,euro.getCode()));
+                // Add new Item to cart
+                currentCart.getCartLineItems().add(newItem);
+            }
+            // Adjust cartSubTotal
+            cartSubTotalRaw = currentCart.getCartSubTotal().getRaw();
+            cartSubTotalRaw += increaseLineTotalRaw;
+            currentCart.setCartSubTotal(new Total(euro.getSymbol(), cartSubTotalRaw, euro.getCode()));
 
-        // Adjust cartTotalItems
-        currentCart.setTotalItems(currentCart.getTotalItems() + prodQuantity);
+            // Adjust cartTotalItems
+            currentCart.setTotalItems(currentCart.getTotalItems() + prodQuantity);
 
-        // Unique items is same as length of cartLine Items array
-        currentCart.setTotalUniqueItems(currentCart.getCartLineItems().size());
+            // Unique items is same as length of cartLine Items array
+            currentCart.setTotalUniqueItems(currentCart.getCartLineItems().size());
 
-    // Save cart and return
-    return ResponseEntity.ok( cartRepository.save(currentCart));
-    }
+            // Save cart and return
+            return ResponseEntity.ok(cartRepository.save(currentCart));
+        }}
 
     /**
      * This route handles changes of the quantities of the items in the cart

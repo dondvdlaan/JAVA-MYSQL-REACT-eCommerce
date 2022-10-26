@@ -1,11 +1,13 @@
 import { Container, Typography, Button, Grid } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 
-import CartItem from './CartItem/CartItem';
-import Navbar from '../Navbar/Navbar';
+import CartItem from './cartItem/CartItem';
+import Navbar from '../navbar/Navbar';
 
 import css from './Cart.module.css'
-import { useApi, apiSimple } from '../../shared/Api';
+import { CartInterface} from '../../types/CartInterface';
+import { apiSimple, useApi } from '../../shared/Api';
+import { Item } from '../../types/Common';
 
 /**
  * Cart Component which displays items in cart and where you can change the
@@ -15,19 +17,19 @@ const Cart = () => {
 
 // *** Constants and variables ***
 const {cartID}          = useParams();
-const [cart, setCart]   = useApi(`cart/${cartID}`);
+const [cart, setCart]   = useApi<CartInterface>(`cart/${cartID}`);
 
 if(!cart) return <p>Loading cart...</p>
 
 // *** Event handlers ***
-const handleUpdateCartQty = (itemID, quantity) => {
+const handleUpdateCartQty = (itemID: number, quantity: number) => {
     
     apiSimple("PUT",`cartQuantities/${cart.cartID}/${itemID}`,{quantity:quantity})
     .then(resCart=>setCart(resCart.data))
     // .then(resCart=>console.log(resCart.data))
 };
 
-const handleRemoveFromCart = (itemID) => {
+const handleRemoveFromCart = (itemID: number) => {
     apiSimple("PUT",`removeItem/${cart.cartID}/${itemID}`)
     .then(resCart=>setCart(resCart.data))
     // .then(resCart=>console.log(resCart.data))
@@ -50,7 +52,7 @@ const EmptyCart = () => (
 const FilledCart = () => (
     <>
         <Grid container spacing={3}>
-            {cart.cartLineItems.map((item) => (
+            {cart.cartLineItems.map((item: Item) => (
                 <Grid item xs={12} sm={4} key={item.itemID}>
                     <CartItem item={item} onUpdateCartQty={handleUpdateCartQty} onRemoveFromCart={handleRemoveFromCart}/>
                 </Grid>

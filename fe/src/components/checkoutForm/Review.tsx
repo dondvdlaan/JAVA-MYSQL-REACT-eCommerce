@@ -1,10 +1,14 @@
 import { Typography, List, ListItem, ListItemText } from "@mui/material";
+import { CheckoutToken } from "../../types/CheckoutToken";
 
+interface Props{
+    checkoutToken: CheckoutToken;
+}
 /**
  * Component that displays the items about to be ordered with quantity and 
  * total price
  */
-const Review = ({ checkoutToken }) => {
+const Review = (props: Props) => {
 
   return (
     <>
@@ -13,7 +17,7 @@ const Review = ({ checkoutToken }) => {
       </Typography>
 
       <List disablePadding>
-        {checkoutToken.live.lineItems.map((product) => (
+        {props.checkoutToken.live.lineItems.map((product) => (
           <ListItem style={{ padding: "10px 0" }} key={product.productName}>
             <ListItemText
               primary={product.productName}
@@ -27,7 +31,7 @@ const Review = ({ checkoutToken }) => {
         <ListItem style={{ padding: "10px 0" }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" style={{ fontWeight: 700 }}>
-            {checkoutToken.live.subTotal.formattedWithSymbol}
+            {props.checkoutToken.live.subTotal.formattedWithSymbol}
           </Typography>
         </ListItem>
       </List>

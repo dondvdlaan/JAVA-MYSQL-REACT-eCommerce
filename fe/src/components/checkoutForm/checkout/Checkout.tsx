@@ -16,6 +16,9 @@ import AddressForm from "../AddressForm";
 import PaymentForm from "../PaymentForm";
 
 import { useApi, apiSimple} from '../../../shared/Api';
+import { PO, POWithoutCustomerRef } from "../../../types/PurchaseOrder";
+import { CheckoutToken } from "../../../types/CheckoutToken";
+import { FieldValues } from "react-hook-form";
 
 const steps = ["Shipping Address", "Payment Details"];
 
@@ -27,9 +30,9 @@ const Checkout = () => {
 // *** Constants and variables ***
 const {cartID}                          = useParams();
 const [cart, setCart]                   = useApi(`cart/${cartID}`);
-const [order, setOrder]                 = useState({});
+const [order, setOrder]                 = useState<PO | undefined>();
 const [errorMessage, setErrorMessage]   = useState("");
-const [checkoutToken, setCheckoutToken] = useApi(`generateToken/${cartID}`);
+const [checkoutToken, setCheckoutToken] = useApi<CheckoutToken>(`generateToken/${cartID}`);
 const [activeStep, setActiveStep]       = useState(0);
 const [shippingData, setShippingData]   = useState({});
 
@@ -40,14 +43,14 @@ if(!checkoutToken) return <p>Loading checkoutToken...</p>
 const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
 const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
-const next = (data) => {
+const next = (data: FieldValues) => {
     setShippingData(data);
     console.log("next data: ", data )
     nextStep();
 };
 
 let Confirmation = () =>
-    order.customer ? (
+    order?.customer ? (
       <>
         <div>
           <Typography variant="h5">
@@ -84,7 +87,7 @@ let Confirmation = () =>
   }
 
 // *** Event handlers ***
-const onCaptureCheckout = async (checkoutTokenId, newOrder) => {
+const onCaptureCheckout = async (checkoutTokenId: number, newOrder: POWithoutCustomerRef) => {
     
     apiSimple("POST",`newOrder/${checkoutToken.id}`, newOrder)
     .then(res=> setOrder(res.data))
